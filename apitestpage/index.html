@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>API TEST PAGE</title>
+<link href="images/favicon.ico" rel="shortcut icon">
+<link type="text/css" rel="stylesheet" href="css/global.css"/>
+<link type="text/css" rel="stylesheet" href="css/main.css"/>
+
+
+</head>
+<body>
+<h1>API TEST PAGE</h1>
+
+<div id="selectBox">
+    <p>Select an API here:</p>
+    <select>
+        <option value='' selected></option>
+        <option value='registerForm'>UserRegister</option>
+        <option value='loginForm'>UserLogin</option>
+        <option value='viewBookForm'>viewBook</option>
+    </select>
+</div>
+<div id="content">
+    <div id="requestForm">
+        <h3>Request:</h3>
+
+        <div id="requestContent">
+            <!--
+                Register form
+            -->
+            <div id="registerForm" class="request hidden">
+                <form>
+                    <div class="row">
+                        <label>Username <strong>*</strong></label>
+                        <input type="text" name="username" value="" required/>
+                    </div>
+                    <div class="row">
+                        <label>Password <strong>*</strong></label>
+                        <input type="password" name="password" required/>
+                    </div>
+                    <div class="row">
+                        <label>&nbsp;</label>
+                        <input type="submit" value="Register" class="submitForm"/>
+                    </div>
+                </form>
+            </div>
+
+            <div id="loginForm" class="request hidden">
+                <form>
+                    <div class="row">
+                        <label>Username <strong>*</strong></label>
+                        <input type="text" name="username" value="" required/>
+                    </div>
+                    <div class="row">
+                        <label>Password <strong>*</strong></label>
+                        <input type="password" name="password" required/>
+                    </div>
+                    <div class="row">
+                        <label>&nbsp;</label>
+                        <input type="submit" id="btnLogin" value="Login" class="submitForm"/>
+                        <input type="button" id="btnLogout" value="Logout" class="submitForm"/>
+                    </div>
+                </form>
+            </div>
+
+
+            <div id="viewBookForm" class="request hidden">
+                <div id="searchForm">
+                    <form action="">
+                        <div class="row">
+                            <label>Search by name :</label>
+                            <input type="text" id="searchKey" placeHolder="enter name"/>
+                        </div>
+                        <div class="row">
+                            <label>&nbsp;</label>
+                            <input type="submit" id="btnSearch" value="Search by Name"
+                                   class="submitForm"/>
+                        </div>
+                    </form>
+                </div>
+                <br/>
+                <br/>
+
+                <div id="sortBy">
+                    <div class="row" style="overflow: visible;">
+                        <label>sort by name :</label>
+                    </div>
+                    <div class="">
+                        <input type="radio" name="sortBy" value="name"/> name | <input type="radio" name="sortBy" value="id"/> id
+                    </div>
+                </div>
+                <br/>
+                <br/>
+
+                <div id="pagingForm">
+                    <form action="">
+                        <div class="row">
+                            <label>page</label>
+                            <input type="text" name="page" id="page"/>
+                        </div>
+                        <div class="row">
+                            <label>item per page</label>
+                            <input type="text" name="itemsPerPage" id="itemsPerPage"/>
+                        </div>
+                        <div class="row">
+                            <label>&nbsp;</label>
+                            <input type="submit" value="view page"
+                                   class="submitForm"/>
+                        </div>
+                    </form>
+                </div>
+                <br/>
+                <br/>
+
+                <div id="getBookForm">
+                    <form>
+                        <div class="row">
+                            <label>ID ( null to get all list)<strong>*</strong></label>
+                            <input type="text" id="bookID" name="id"/>
+                        </div>
+                        <div class="row">
+                            <label>&nbsp;</label>
+                            <input type="submit" name="getBook" value="Get Book" class="submitForm"/>
+                            <input type="button" id="btnDelete" style="display:none" value="Delete Book"
+                                   class="submitForm"/>
+                            <input type="button" id="btnIsUpdate" style="display:none" value="Update this book?"
+                                   class="submitForm"/>
+
+                        </div>
+                    </form>
+
+                </div>
+                <br/>
+                <br/>
+
+                <div id="updateForm" style="display:none">
+
+                    <form>
+                        <div class="row">
+                            <label>ID</label>
+                            <input type="hidden" name="id" class="bookId"/>
+                        </div>
+
+                        <div class="row">
+                            <label>name<strong>*</strong></label>
+                            <input type="text" name="name" class="bookName" required/>
+                        </div>
+                        <div class="row">
+                            <label>description <strong>*</strong></label>
+                            <textarea rows="4" name="desc" class="bookDesc" value="" required/></textarea>
+                        </div>
+                        <div class="row">
+                            <label>price<strong>*</strong></label>
+                            <input type="text" name="price" class="bookPrice" required/>
+                        </div>
+
+                        <div class="row">
+                            <label>picture<strong>*</strong></label>
+                            <input type="text" name="picture" class="bookPic" required/>
+                            <img style="width:60px;height: 60px;vertical-align: top;" class="picItem"/>
+                        </div>
+                        <div class="row">
+                            <input type="submit" value="Update Book" class="submitForm"/>
+                            <label>&nbsp;</label>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div id="responseForm">
+                <h3>Response:</h3>
+
+                <div id="responseContent">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="js/lib/jquery-core.js"></script>
+<script type="text/javascript">
+    self = this;
+    var host = 'http://localhost:3000/';
+    var API_LINK = {
+        'register': 'user/register/',
+        'login': 'user/login/',
+        'logout': 'user/logout/',
+        'bookView': 'book/view/',
+        'bookUpdate': 'book/update/',
+        'bookRemove': 'book/remove/',
+        'bookSearch': 'book/search/',
+        'bookSort': 'book/sort/',
+        'paging': 'book/paging/'
+    };
+
+    function renderJSON(obj) {
+        var keys = [], retValue = "";
+        for (var key in obj) {
+            if (typeof obj[key] === 'object' && obj[key] != null) {
+                retValue += "<div class='tree'>" + key + ": ";
+                retValue += renderJSON(obj[key]);
+                retValue += "</div>";
+            } else {
+                retValue += "<div class='tree'>" + key + ": " + obj[key] + "</div>";
+            }
+            keys.push(key);
+        }
+        return retValue;
+    }
+
+    var showResult = function (result) {
+        $('#responseContent').empty().append(renderJSON(result.responseJSON));
+    }
+
+    var reqData = function (form, type, URLKey, params, callback) {
+        params = (params != void 0 && params != "")
+                ? (typeof params == 'object')
+                ? params
+                : [params]
+                : [];
+
+        callback = (callback != void 0) ? callback : function () {
+        };
+        var URL = this.host + this.API_LINK[URLKey] + params.join('/');
+
+        return {
+            url: URL,
+            type: type,
+            header: "'Access-Control-Allow-Origin' : '*'",
+            data: $(form).serialize(),
+            success: function (response, textStatus, data) {
+                callback(response);
+                self.showResult(data);
+            },
+            error: function (error) {
+                self.showResult(error);
+            }
+        }
+    }
+
+    var fillBookData = function (response) {
+        if (response.result.length != 0) {
+            if (response.result.length > 1) {
+                $('.bookId').val('');
+                $('.bookDesc').val('');
+                $('.bookName').val('');
+                $('.bookPrice').val('');
+                $('.bookPic').val('');
+                $('.picItem').attr('src', '');
+                $('#btnIsUpdate').hide();
+                $('#btnDelete').hide();
+                $('#updateForm').hide();
+                return;
+            } 
+            $('#btnDelete').show();
+            $('#btnIsUpdate').show();
+            data = response.result;
+            $('.bookId').val(data.id);
+            $('.bookDesc').val(data.desc);
+            $('.bookName').val(data.name);
+            $('.bookPrice').val(data.price);
+            $('.bookPic').val(data.picture);
+            $('.picItem').attr('src', data.picture);
+        } else {
+            $('#btnDelete').hide();
+            $('#btnIsUpdate').hide();
+        }
+    };
+
+    $(document).ready(function () {
+        /*$('#' + $('#selectBox select').val()).removeClass('hidden');*/
+        $('#selectBox select').on('change', function () {
+            $('.request').addClass('hidden');
+            $('#' + $(this).val()).removeClass('hidden');
+            $('#responseContent').empty();
+        });
+
+        $('#registerForm form').on('submit', function () {
+            $.ajax(reqData(this, 'POST', 'register'));
+            return false;
+        });
+        $('#loginForm form').on('submit', function () {
+            $.ajax(reqData(this, 'POST', 'login', null, function (response) {
+                if (response.message == 'Login successfully.') {
+                    $('#btnLogout').show();
+                }
+            }));
+            return false;
+        });
+        $('#btnLogout').on('click', function () {
+            $.ajax(reqData(this, 'POST', 'logout', null, function (response) {
+                $('#btnLogout').toggle();
+            }));
+            return false;
+        });
+
+        $('#getBookForm form').on('submit', function () {
+            var params = $('#bookID').val();
+            $.ajax(reqData(this, 'GET', 'bookView', params, function (response) {
+                fillBookData(response);
+            }));
+            return false;
+        });
+
+        $('#updateForm form').on('submit', function () {
+            var params = $('.bookId').val();
+            if (params == '' || params == void 0) return false;
+            $.ajax(reqData(this, 'POST', 'bookUpdate', params, function (response) {
+                fillBookData(response);
+                console.log('update success!');
+            }));
+            return false;
+        });
+
+
+        $('#searchForm form').on('submit', function () {
+            var params = $('#searchKey').val().trim();
+            if (params == '' || params == void 0) return false;
+            $.ajax(reqData(this, 'GET', 'bookSearch', params, function (response) {
+                fillBookData(response);
+            }));
+            return false;
+        });
+
+
+        $('#pagingForm form').on('submit', function () {
+            if ($('#page').val() == void 0 && $('#itemsPerPage').val() == void 0)
+                return;
+
+            var params = [$('#page').val(), $('#itemsPerPage').val()];
+            if (params == '' || params == void 0) return false;
+            $.ajax(reqData(this, 'GET', 'paging', params, function (response) {
+                fillBookData(response);
+            }));
+            return false;
+        });
+
+        $('#btnIsUpdate').on('click', function () {
+            if ($('.bookId').val() == '' || $('.bookId').val() == void 0) {
+                $('#updateForm').hide();
+            } else {
+                $('#updateForm').toggle();
+            }
+        });
+
+        $('#btnDelete').on('click', function () {
+            var params = $('.bookId').val();
+            if (params == '' || params == void 0) return false;
+
+            $.ajax(reqData(this, 'DELETE', 'bookRemove', params, function (response) {
+                if (response.result == 'delete success') {
+                    $('#btnDelte').hide();
+                }
+                fillBookData(response);
+            }));
+            return false;
+        });
+
+        $('input[name="sortBy"]:radio').on('change', function () {
+            var params = $('input[name="sortBy"]:radio:checked').val();
+            if (params == '' || params == void 0) return false;
+            $.ajax(reqData(this, 'GET', 'bookSort', params, function (response) {
+                fillBookData(response);
+            }));
+            return false;
+        })
+
+    });
+</script>
+</body>
+</html>
