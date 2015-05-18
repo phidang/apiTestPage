@@ -9,30 +9,28 @@ module.exports = {
 
 	register: function (req, res) {
 		console.log('Register');
-		var message, user = req.body;
+		var user = req.body;
 		if (req.session && req.session.user) {
-			message = {'message': 'Already logged in.'};
+			res.json({'message': 'Already logged in.'});
 		}
 		else {
-			message = User.Add(user.username, user.password);
+			User.Add(user.username, user.password, function (msg) {
+				res.json(msg);
+			});
 		}
-		res.json(message);
 	},
 
 	login: function (req, res) {
 		console.log('Login');
 		var message, user = req.body;
 		if (req.session && req.session.user) {
-			message = {'message': 'Already logged in.'};
+			res.json({'message': 'Already logged in.'});
 		}
 		else {
-			message = User.Login(user.username, user.password);
-			if (message.status) {
-				req.session.user = message.user; 
-			}
-			message = message.message;
+			User.Login(user.username, user.password, req, function (msg) {
+				res.json(msg);
+			});
 		}
-		res.json(message);
 	},
 
 	logout: function (req, res) {
